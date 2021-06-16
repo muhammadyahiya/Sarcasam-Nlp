@@ -1,0 +1,23 @@
+import json
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+
+sentences = datastore['headline'].tolist()
+labels = datastore['is_sarcastic'].tolist()
+urls = datastore['article_link'].tolist()
+
+
+unique_labels = ["Sarcastic", "Non-Sarcastic"]
+model = keras.models.load_model("model_sarscasm.h5")
+def predict(input_sentence):
+    sentence = [input_sentence]
+    sequences = tokenizer.texts_to_sequences(sentence)
+    padded = pad_sequences(sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+    y_pred =model.predict(padded)
+    y_pred = np.argmax(y_pred, axis=1)
+    predicted_categories = [unique_labels[i] for i in y_pred]
+    output = predicted_categories[0]
+    return predicted_categories
